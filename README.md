@@ -10,7 +10,7 @@ project, but I'm not sure if it is going to work.
 ## Installation
 
 ```bash
-heroku config:add BUILDPACK_URL=https://github.com/ryanburnette/buildpack-caddy.git
+heroku buildpacks:set https://github.com/ryanburnette/buildpack-caddy.git
 ```
 
 ## Usage
