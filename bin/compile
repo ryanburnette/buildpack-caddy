@@ -1,27 +1,25 @@
 #!/bin/bash
+set -e
 
-CURDIR=$PWD
-DIR="$( cd "$( dirname "$0" )" && pwd )"
-echo "-----> Installing latest caddy bin"
-# if [ -f $2/caddy_linux_amd64.zip ]; then
-#   echo "-----> caddy is already installed"
-#   cd $2; unzip -o caddy_linux_amd64.zip
-#   cp $2/caddy_linux_amd64 $1/caddy
-# else
-#   echo "-----> download and unzip caddy"
-#   cd $2; wget https://github.com/mholt/caddy/releases/download/v0.5.0/caddy_linux_amd64.zip
-#   cd $2; mkdir -p /app/tmp/cache
-#   cd $2; unzip caddy_linux_amd64.zip
-#   cp $2/caddy_linux_amd64 $1/caddy
-# fi
+BUILD_DIR=$0
+CACHE_DIR=$1
+ENV_DIR=$2
 
-cd $DIR; cp ../caddy $1/caddy
-cd $CURDIR
+# Download Caddy if not present in cache
+if [ ! -f $CACHE_DIR/caddy/caddy ]; then
+  pushd $CACHE_DIR
+    mkdir caddy
+    pushd caddy
+      wget https://github.com/caddyserver/caddy/releases/download/v2.4.3/caddy_2.4.3_linux_amd64.tar.gz
+      tar zxf caddy_2.4.3_linux_amd64.tar.gz
+    popd
+  popd
+fi
 
-echo "-----> Setting up Procfile"
-cd $DIR; cp ../Procfile $1/Procfile
-cd $CURDIR
+# Copy Caddy binary into project
+cp $CACHE_DIR/caddy/caddy $BUILD_DIR
 
-echo "-----> Deploy Caddy Runner"
-cd $DIR; cp ../setup_caddy.sh $1/setup_caddy.sh
-cd $CURDIR 
+# Use default Procfile if one isn't included in the project
+if [ ! -f $BUILD_DIR/Procfile ]; then
+  cp Profile $BUILD_DIR
+fi

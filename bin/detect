@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
-# bin/detect <build-dir>
+#!/bin/bash
 set -e
 
-if test -n "$(find "$1" -type f -name 'Caddyfile' | sed 1q)"
-then echo Caddy
-else echo no; exit 1
+if [ -f $1/Caddyfile ]; then
+  exit 0
+else
+  exit 1
 fi
